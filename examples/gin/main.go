@@ -12,6 +12,8 @@ func main() {
 	//Initialize the APM
 	apmClient, err := telex.Init(telex.APMOptions{
 		WebhookURL:        "https://ping.telex.im/v1/webhooks/cf82320045eb?username=collins",
+		WebhookURL404:     "https://ping.telex.im/v1/webhooks/a216cb0c8a0d?username=404-Errors",
+		WebhookURL500:     "https://ping.telex.im/v1/webhooks/a7854f30effd?username=505-Errors",
 		Async:             false,
 		EnableTracing:     true,
 		TracingSampleRate: 1.0,
@@ -34,6 +36,14 @@ func main() {
 
 	router.GET("/panic", func(ctx *gin.Context) {
 		panic("Something went wrong")
+	})
+
+	router.GET("/404", func(ctx *gin.Context) {
+		ctx.JSON(404, gin.H{"message": "Not Found"})
+	})
+
+	router.GET("/500", func(ctx *gin.Context) {
+		ctx.JSON(500, gin.H{"message": "Internal Server Error"})
 	})
 
 	router.Run(":8081")
